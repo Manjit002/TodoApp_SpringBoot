@@ -17,25 +17,6 @@ This is a full-stack-ready backend REST API for a Todo application built using *
 
 ---
 
-## 🔐 Authentication Endpoints
-
-| Method | Endpoint        | Description         |
-|--------|-----------------|---------------------|
-| POST   | `/auth/signup`  | Register new user   |
-| POST   | `/auth/login`   | Login & get JWT     |
-
-📦 **Login Response:**
-```json
-{
-  "token": "jwt_token_here",
-  "user": {
-    "id": 1,
-    "name": "John",
-    "email": "john@example.com",
-    "role": "ROLE_USER"
-  }
-}
-
 
 📋 Todo Endpoints
 All Todo endpoints require a valid JWT token in the Authorization header:
@@ -61,4 +42,27 @@ Hibernate & JPA
 MySQL
 Lombok
 ModelMapper
+
+## 🔐 Authentication Endpoints
+
+| Method | Endpoint        | Description         |
+|--------|-----------------|---------------------|
+| POST   | `/auth/signup`  | Register new user   |
+| POST   | `/auth/login`   | Login & get JWT     |
+
+📦 **Login Response:**
+```json
+{
+  "token": "jwt_token_here",
+  "user": {
+    "id": 1,
+    "name": "John",
+    "email": "john@example.com",
+    "role": "ROLE_USER"
+  }
+}
+
+
+
+
 
