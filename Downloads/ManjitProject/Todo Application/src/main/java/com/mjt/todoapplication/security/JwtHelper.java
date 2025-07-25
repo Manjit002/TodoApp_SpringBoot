@@ -3,6 +3,7 @@ package com.mjt.todoapplication.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +17,7 @@ public class JwtHelper {
 
     public static final long TOKEN_VALIDITY = 5*60*60*1000;
 
-    public static final String SECRET_KEY = "Har_team_main_bas_ek_hi_gunda_ho_sakta_hai_aur_iss_team_ka_gunda_main_hoon";
+    public static final String SECRET_KEY = "hfytftyftyftyfytfgytftrftfftftctygfvchgftyfytftyfgytgyghfgygftyfgtyfghfgyftyftyf";
 
     public String getUsernameFromToken(String token){
         return getClaimFromToken(token, Claims::getSubject);
@@ -29,7 +30,7 @@ public class JwtHelper {
     }
 
     private Claims getAllClaimsFromToken(String token){
-        return Jwts.parser().setSigningKey(SECRET_KEY).build().parseSignedClaims(token).getPayload();
+        return Jwts.parser().setSigningKey(Keys.hmacShaKeyFor(SECRET_KEY.getBytes())).build().parseSignedClaims(token).getPayload();
     }
 
     public Boolean isTokenExpired(String token){
@@ -50,7 +51,12 @@ public class JwtHelper {
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
-                .setIssuedAt(new Date(System.currentTimeMillis()+ TOKEN_VALIDITY))
-                .signWith(SignatureAlgorithm.ES256, SECRET_KEY).compact();
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + TOKEN_VALIDITY))
+                .signWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()), SignatureAlgorithm.HS256)
+                .compact();
     }
+
+
 }
+

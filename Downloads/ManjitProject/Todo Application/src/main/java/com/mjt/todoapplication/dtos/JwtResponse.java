@@ -2,7 +2,8 @@ package com.mjt.todoapplication.dtos;
 
 import lombok.*;
 
-
+@AllArgsConstructor
+@NoArgsConstructor
 @Setter
 @Getter
 @Builder
@@ -12,13 +13,6 @@ public class JwtResponse {
     UserDto user;
     private String refreshToken;
 
-    public JwtResponse(String token, UserDto user, String refreshToken) {
-        this.token = token;
-        this.user = user;
-        this.refreshToken = refreshToken;
-    }
 
-    public JwtResponse() {
-    }
 
 }

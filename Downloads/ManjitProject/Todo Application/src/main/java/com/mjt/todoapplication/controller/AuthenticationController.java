@@ -5,6 +5,8 @@ import com.mjt.todoapplication.dtos.JwtRequest;
 import com.mjt.todoapplication.dtos.JwtResponse;
 
 import com.mjt.todoapplication.dtos.UserDto;
+
+import com.mjt.todoapplication.entities.UserEntity;
 import com.mjt.todoapplication.repositories.UserRepo;
 import com.mjt.todoapplication.security.JwtHelper;
 import com.mjt.todoapplication.security.JwtUserDetailsService;
@@ -20,6 +22,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,7 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
 
     @Autowired
-    private JwtUserDetailsService userDetailsService;
+    private JwtUserDetailsService jwtUserDetailsService;
 
     @Autowired
     private UserService userService;
@@ -53,24 +56,32 @@ public class AuthenticationController {
 
         this.doAuthentication(request.getEmail(),request.getPassword());
 
-        UserDetails user = userDetailsService.loadUserByUsername(request.getEmail());
+        UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(request.getEmail());
+        String token = jwtHelper.generateToken(userDetails);
 
-        String token = jwtHelper.generateToken(user);
+        UserEntity user = userRepo.findByEmail(request.getEmail()).orElseThrow(() -> new RuntimeException("User not found"));
+        UserDto userDto = mapper.map(user, UserDto.class);
 
-        JwtResponse jwtResponse = JwtResponse.builder().token(token).user(mapper.map(user, UserDto.class)).build();
+        JwtResponse jwtResponse = JwtResponse.builder()
+                .token(token)
+                .user(userDto)
+                .build();
         return ResponseEntity.ok(jwtResponse);
     }
 
     private void doAuthentication(String email, String password) {
-
         try {
-            Authentication authentication= new UsernamePasswordAuthenticationToken(email, password);
-            authenticationManager.authenticate(authentication);
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(email, password)
+            );
 
-        }catch (BadCredentialsException exception){
-            throw new BadCredentialsException("Invalid e-mail and password !!");
+            SecurityContextHolder.getContext().setAuthentication(authentication); // Optional but useful
+
+        } catch (BadCredentialsException ex) {
+            throw new BadCredentialsException("Invalid email or password!!");
         }
     }
+
 
 
     @PostMapping("/signup")
