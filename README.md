@@ -35,3 +35,30 @@ This is a full-stack-ready backend REST API for a Todo application built using *
     "role": "ROLE_USER"
   }
 }
+
+
+📋 Todo Endpoints
+All Todo endpoints require a valid JWT token in the Authorization header:
+
+| Method | Endpoint               | Description                     |
+| ------ | ---------------------- | ------------------------------- |
+| POST   | `/todo/create`         | Create a new todo item          |
+| PUT    | `/todo/update/{id}`    | Update an existing todo         |
+| DELETE | `/todo/delete/{id}`    | Delete a todo                   |
+| GET    | `/todo/get/{id}`       | Get todo by ID                  |
+| GET    | `/todo/all`            | Get all todos (with pagination) |
+| GET    | `/todo/all/complete`   | Get completed todos             |
+| GET    | `/todo/all/incomplete` | Get incomplete todos            |
+| PUT    | `/todo/{id}/complete`  | Mark a todo as complete         |
+
+
+🛠 Tech Stack
+Java 17
+Spring Boot
+Spring Security
+JWT (JSON Web Tokens)
+Hibernate & JPA
+MySQL
+Lombok
+ModelMapper
+
